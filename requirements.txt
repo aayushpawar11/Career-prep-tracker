@@ -1,0 +1,9 @@
+torch
+transformers
+torchtune
+scikit-learn
+pdfplumber
+flask
+streamlit
+numpy
+pandas
