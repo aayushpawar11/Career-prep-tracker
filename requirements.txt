@@ -1,5 +1,5 @@
-torch
-transformers
+torch==2.2.2
+transformers==4.30.2
 torchtune
 scikit-learn
 pdfplumber
@@ -7,3 +7,5 @@ flask
 streamlit
 numpy
 pandas
+sentence-transformers==2.2.2
+huggingface-hub==0.16.4
