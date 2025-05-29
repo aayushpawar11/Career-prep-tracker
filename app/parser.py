@@ -12,19 +12,34 @@ def simple_skill_extractor(text):
                    'machine learning', 'deep learning', 'react', 'kubernetes', 'kafka']
     found_skills = [skill for skill in skills_list if skill.lower() in text.lower()]
     return list(set(found_skills))
-def extract_section(text, header):
-    pattern = rf"{header}.*?(?=\n[A-Z][^\n]{2,}|$)"
-    match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
-    return match.group(0).strip() if match else ""
+def extract_sections(text, section_names):
+    lines = text.split('\n')
+    sections = {name: "" for name in section_names}
+    
+    current_section = None
+    for line in lines:
+        line_clean = line.strip().lower()
+        for name in section_names:
+            if name.lower() in line_clean:
+                current_section = name
+                break
+        else:
+            if current_section:
+                sections[current_section] += line + '\n'
+    
+    return sections
 def parse_resume(file_path):
     raw_text = extract_text_from_pdf(file_path)
+    
+    section_names = ["Education", "Experience", "Projects", "Coursework"]
+    extracted = extract_sections(raw_text, section_names)
 
     return {
         "skills": simple_skill_extractor(raw_text),
-        "education": extract_section(raw_text, "education"),
-        "experience": extract_section(raw_text, "experience"),
-        "projects": extract_section(raw_text, "projects"),
-        "coursework": extract_section(raw_text, "coursework"),
+        "education": extracted["Education"].strip(),
+        "experience": extracted["Experience"].strip(),
+        "projects": extracted["Projects"].strip(),
+        "coursework": extracted["Coursework"].strip(),
     }
 if __name__ == "__main__":
     parsed_data = parse_resume("sample_resume.pdf")
